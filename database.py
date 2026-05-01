@@ -64,7 +64,8 @@ async def is_banned_user(user_id: int) -> bool:
 async def ban_user(user_id: int, admin_id: int):
     await users_col.update_one(
         {"user_id": user_id},
-        {"$set": {"banned": True, "banned_by": admin_id, "banned_at": datetime.datetime.now(datetime.timezone.utc)}}
+        {"$set": {"banned": True, "banned_by": admin_id, "banned_at": datetime.datetime.now(datetime.timezone.utc)}},
+        upsert=True
     )
 
 async def unban_user(user_id: int):
