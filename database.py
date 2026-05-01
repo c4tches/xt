@@ -180,16 +180,14 @@ async def get_key_data(key: str) -> Optional[Dict]:
     return None
 
 async def use_key(user_id: int, key: str):
-    doc = await keys_col.find_one({"key": key, "used": False})
+    doc = await keys_col.find_one_and_update(
+        {"key": key, "used": False},
+        {"$set": {"used": True, "used_by": user_id, "used_at": datetime.datetime.now(datetime.timezone.utc)}}
+    )
     if not doc:
         return False, "Invalid or already used key"
     days = doc['days']
     plan_type = doc['plans_type']
-    # Update key
-    await keys_col.update_one(
-        {"key": key},
-        {"$set": {"used": True, "used_by": user_id, "used_at": datetime.datetime.now(datetime.timezone.utc)}}
-    )
     # Update user plans
     expiry = None
     if days > 0:

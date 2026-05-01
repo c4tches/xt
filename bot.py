@@ -482,7 +482,7 @@ async def start(event):
 |   <tg-emoji emoji-id="5039844895779455925">✔️</tg-emoji> /chkpxy ━ Test proxy status
 |   <tg-emoji emoji-id="5039614900280754969">🗑️</tg-emoji> /rmpxy ━ Remove proxy
 
-<tg-emoji emoji-id="5039727497143387500">👑</tg-emoji> <b>PLAN</b>: {plan.upper()} | <b>Limit</b>: {limit} CCs
+<tg-emoji emoji-id="5039727497143387500">👑</tg-emoji> <b>PLAN</b>: {plans.upper()} | <b>Limit</b>: {limit} CCs
 <tg-emoji emoji-id="5042101437237036298">🔗</tg-emoji> <b>Contact</b>: @ZenoRealWebs'''
     await styled_reply(event, text, emoji_ids=[5042334757040423886, 5039649904264217620, 5042290883949495533, 5039600026809009149, 5039998939076494446, 5042050649248760772, 5039891861246838069, 5040042498634810056, 5042186567783809934, 5042306247047513767, 5041975203853239332, 5039727497143387500, 5042328396193864923, 5042101437237036298, 5039623284056917259, 5039844895779455925, 5039614900280754969])
 
@@ -876,7 +876,7 @@ async def info_cmd(event):
     limit = get_cc_limit(plans, event.sender_id)
     sites = await get_user_sites(event.sender_id)
     proxies = await get_all_user_proxies(event.sender_id)
-    text = f'<tg-emoji emoji-id="5042306247047513767">ℹ️</tg-emoji> <b>Profile</b>\n━━━━━━━━━━━━━━━━━\nID: {event.sender_id}\nPlan: {plan.upper()}\nCC Limit: {limit}\nSites: {len(sites)}\nProxies: {len(proxies)}'
+    text = f'<tg-emoji emoji-id="5042306247047513767">ℹ️</tg-emoji> <b>Profile</b>\n━━━━━━━━━━━━━━━━━\nID: {event.sender_id}\nPlan: {plans.upper()}\nCC Limit: {limit}\nSites: {len(sites)}\nProxies: {len(proxies)}'
     await styled_reply(event, text, emoji_ids=[5042306247047513767])
 
 @client.on(events.NewMessage(pattern=r'(?i)^[/.]redeem\b'))
@@ -887,6 +887,7 @@ async def redeem_cmd(event):
     if len(parts) != 2:
         return await styled_reply(event, '<tg-emoji emoji-id="5039665997506675838">⚠️</tg-emoji> Usage: /redeem KEY', emoji_ids=[5039665997506675838])
     key = parts[1].upper()
+    await ensure_user(event.sender_id)
     success, msg = await use_key(event.sender_id, key)
     if success:
         await styled_reply(event, f'<tg-emoji emoji-id="5041975203853239332">🎁</tg-emoji> {msg}', emoji_ids=[5041975203853239332])
