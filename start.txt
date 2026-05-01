@@ -1,0 +1,29 @@
+@client.on(events.NewMessage(pattern=r'(?i)^[/.]start$'))
+async def start(event):
+    await ensure_user(event.sender_id)
+    if await is_banned_user(event.sender_id):
+        return await event.reply('<tg-emoji emoji-id="5039671744172917707">⛔</tg-emoji> <b>BANNED</b>', parse_mode='html')
+    plans = await get_user_plans(event.sender_id)
+    limit = get_cc_limit(plans, event.sender_id)
+    text = f"""<tg-emoji emoji-id="5042334757040423886">⚡</tg-emoji> <b><i>Checker Commands<i/></b>
+|   <tg-emoji emoji-id="5039649904264217620">🔍</tg-emoji> /sh ━ Single CC check
+|   <tg-emoji emoji-id="5042290883949495533">📊</tg-emoji> /msh ━ Multi CC from text
+|   <tg-emoji emoji-id="5039600026809009149">📌</tg-emoji> /mtxt ━ Mass CC from .txt file
+|   <tg-emoji emoji-id="5039998939076494446">🃏</tg-emoji> /ran ━ Mass CC Random Sites
+
+<tg-emoji emoji-id="5042050649248760772">💎</tg-emoji> <b><i>Management<i/></b>
+|   <tg-emoji emoji-id="5039891861246838069">➕</tg-emoji> /add ━ Add site(s) to your DB
+|   <tg-emoji emoji-id="5040042498634810056">❌</tg-emoji> /rm ━ Remove site(s) from DB
+|   <tg-emoji emoji-id="5042186567783809934">🌐</tg-emoji> /check ━ Test saved sites
+|   <tg-emoji emoji-id="5042306247047513767">ℹ️</tg-emoji> /info ━ Your profile & stats
+|   <tg-emoji emoji-id="5041975203853239332">🎁</tg-emoji> /redeem ━ Redeem Key
+|   <tg-emoji emoji-id="5039727497143387500">👑</tg-emoji> /plans ━ To Check Plans
+
+<tg-emoji emoji-id="5042328396193864923">🛡️</tg-emoji> <b><i>Proxy ( Private Only )<i/></b>
+|   <tg-emoji emoji-id="5042101437237036298">🔗</tg-emoji> /addpxy ━ Add proxy (max 10)
+|   <tg-emoji emoji-id="5039623284056917259">👀</tg-emoji> /proxy ━ View saved proxies
+|   <tg-emoji emoji-id="5039844895779455925">✔️</tg-emoji> /chkpxy ━ Test proxy status
+|   <tg-emoji emoji-id="5039614900280754969">🗑️</tg-emoji> /rmpxy ━ Remove proxy
+
+<tg-emoji emoji-id="5039727497143387500">👑</tg-emoji> <b>Plan</b>: {plans.upper()} | <b>Limit</b>: {limit} CCs
+<tg-emoji emoji-id="5042101437237036298">🔗</tg-emoji> <b>Contact</b>: @ZenoRealWebs"""
