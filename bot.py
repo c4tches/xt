@@ -581,6 +581,8 @@ async def ran_cmd(event):
     if not proxy:
         return await styled_reply(event, '<tg-emoji emoji-id="5039665997506675838">⚠️</tg-emoji> Proxy required! Use /addpxy', emoji_ids=[5039665997506675838])
     path = await replied.download_media()
+    if not path:
+        return await styled_reply(event, '<tg-emoji emoji-id="5040042498634810056">❌</tg-emoji> Failed to download file', emoji_ids=[5040042498634810056])
     try:
         async with aiofiles.open(path,'r') as f:
             content = await f.read()
@@ -646,6 +648,8 @@ async def mtxt_cmd(event):
     if not sites:
         return await styled_reply(event, '<tg-emoji emoji-id="5039665997506675838">⚠️</tg-emoji> No sites. Add with /add', emoji_ids=[5039665997506675838])
     path = await replied.download_media()
+    if not path:
+        return await styled_reply(event, '<tg-emoji emoji-id="5040042498634810056">❌</tg-emoji> Failed to download file', emoji_ids=[5040042498634810056])
     try:
         async with aiofiles.open(path,'r') as f:
             content = await f.read()
