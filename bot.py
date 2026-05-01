@@ -42,15 +42,27 @@ def _build_entities(html_text, emoji_ids=None):
 
 async def styled_reply(event, html_text, buttons=None, emoji_ids=None, file=None):
     text, entities = _build_entities(html_text, emoji_ids)
-    return await event.reply(text, formatting_entities=entities, buttons=buttons, file=file)
+    try:
+        return await event.reply(text, formatting_entities=entities, buttons=buttons, file=file)
+    except Exception:
+        plain_text, plain_entities = _build_entities(html_text)
+        return await event.reply(plain_text, formatting_entities=plain_entities, buttons=buttons, file=file)
 
 async def styled_send(chat_id, html_text, buttons=None, emoji_ids=None):
     text, entities = _build_entities(html_text, emoji_ids)
-    return await client.send_message(chat_id, text, formatting_entities=entities, buttons=buttons)
+    try:
+        return await client.send_message(chat_id, text, formatting_entities=entities, buttons=buttons)
+    except Exception:
+        plain_text, plain_entities = _build_entities(html_text)
+        return await client.send_message(chat_id, plain_text, formatting_entities=plain_entities, buttons=buttons)
 
 async def styled_edit(msg, html_text, buttons=None, emoji_ids=None):
     text, entities = _build_entities(html_text, emoji_ids)
-    await msg.edit(text, formatting_entities=entities, buttons=buttons)
+    try:
+        await msg.edit(text, formatting_entities=entities, buttons=buttons)
+    except Exception:
+        plain_text, plain_entities = _build_entities(html_text)
+        await msg.edit(plain_text, formatting_entities=plain_entities, buttons=buttons)
 
 def pbtn(text, data=None, url=None):
     if url:

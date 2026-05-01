@@ -40,8 +40,12 @@ async def get_user_plans(user_id: int) -> str:
         return "free"
     plan = doc.get("plans", "free")
     expiry = doc.get("plans_expiry")
-    if expiry and datetime.datetime.now(datetime.timezone.utc) > expiry:
-        return "free"
+    if expiry:
+        now = datetime.datetime.now(datetime.timezone.utc)
+        if expiry.tzinfo is None:
+            expiry = expiry.replace(tzinfo=datetime.timezone.utc)
+        if now > expiry:
+            return "free"
     return plan
 
 async def set_user_plans(user_id: int, plans: str, days: int = 0):
