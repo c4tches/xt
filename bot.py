@@ -26,6 +26,9 @@ API_BASE_URL = "http://127.0.0.1:5000"
 def _utf16_offset(text, py_pos):
     return len(text[:py_pos].encode('utf-16-le')) // 2
 
+def _strip_tg_emoji(html_text):
+    return re.sub(r'<tg-emoji[^>]*>(.*?)</tg-emoji>', r'\1', html_text)
+
 def _build_entities(html_text, emoji_ids=None):
     text, entities = thtml.parse(html_text)
     if emoji_ids:
@@ -45,7 +48,8 @@ async def styled_reply(event, html_text, buttons=None, emoji_ids=None, file=None
     try:
         return await event.reply(text, formatting_entities=entities, buttons=buttons, file=file)
     except Exception:
-        plain_text, plain_entities = _build_entities(html_text)
+        stripped = _strip_tg_emoji(html_text)
+        plain_text, plain_entities = _build_entities(stripped)
         return await event.reply(plain_text, formatting_entities=plain_entities, buttons=buttons, file=file)
 
 async def styled_send(chat_id, html_text, buttons=None, emoji_ids=None):
@@ -53,7 +57,8 @@ async def styled_send(chat_id, html_text, buttons=None, emoji_ids=None):
     try:
         return await client.send_message(chat_id, text, formatting_entities=entities, buttons=buttons)
     except Exception:
-        plain_text, plain_entities = _build_entities(html_text)
+        stripped = _strip_tg_emoji(html_text)
+        plain_text, plain_entities = _build_entities(stripped)
         return await client.send_message(chat_id, plain_text, formatting_entities=plain_entities, buttons=buttons)
 
 async def styled_edit(msg, html_text, buttons=None, emoji_ids=None):
@@ -61,7 +66,8 @@ async def styled_edit(msg, html_text, buttons=None, emoji_ids=None):
     try:
         await msg.edit(text, formatting_entities=entities, buttons=buttons)
     except Exception:
-        plain_text, plain_entities = _build_entities(html_text)
+        stripped = _strip_tg_emoji(html_text)
+        plain_text, plain_entities = _build_entities(stripped)
         await msg.edit(plain_text, formatting_entities=plain_entities, buttons=buttons)
 
 def pbtn(text, data=None, url=None):
